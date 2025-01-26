@@ -12,26 +12,11 @@ import store.novabook.gateway.filter.JwtAuthorizationHeaderFilter;
 @Configuration
 public class RouteLocatorConfig {
 
-	private final JwtAuthorizationHeaderFilter jwtAuthorizationHeaderFilter;
-
 	@Bean
 	public RouteLocator myRoute(RouteLocatorBuilder builder) {
-    return builder.routes()
-			.route("auth-service", p -> p.path("/auth/**")
-				.uri("lb://AUTH-SERVICE"))
-
-			.route("store", p -> p.path("/api/v1/store/**")
-				.and()
-				.weight("store", 1)
-				.filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-				.uri("lb://STORE"))
-
-			.route("coupon", p -> p.path("/api/v1/coupon/**")
-				.filters(f -> f.filter(jwtAuthorizationHeaderFilter.apply(new JwtAuthorizationHeaderFilter.Config())))
-				.uri("lb://COUPON"))
-
+		return builder.routes().route("auth-service", p -> p.path("/auth/**").uri("lb://AUTH-SERVICE"))
+			.route("store", p -> p.path("/api/v1/store/**").and().weight("store", 1).uri("lb://STORE"))
+			.route("coupon", p -> p.path("/api/v1/coupon/**").uri("lb://COUPON"))
 			.build();
-
-
 	}
 }

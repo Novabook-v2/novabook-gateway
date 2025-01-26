@@ -1,44 +1,39 @@
 package store.novabook.gateway.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.RequiredArgsConstructor;
-import store.novabook.gateway.util.KeyManagerUtil;
-import store.novabook.gateway.util.dto.RedisConfigDto;
 
 @Configuration
 @EnableRedisRepositories
 @RequiredArgsConstructor
 public class RedisConfig {
-	private final Environment environment;
 	private final ObjectMapper objectMapper;
+
+	@Value("${spring.data.redis.host}")
+	private String redisHost;
+	@Value("${spring.data.redis.port}")
+	private String redisPort;
+	@Value("${spring.data.redis.password}")
+	private String redisPassword;
 
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory() {
-		RestTemplate restTemplate = new RestTemplate();
-		RedisConfigDto configDto = KeyManagerUtil.getRedisConfig(environment, restTemplate);
-
 		RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
-		config.setHostName(configDto.host());
-		config.setPort(configDto.port());
-		config.setPassword(RedisPassword.of(configDto.password()));
-		config.setDatabase(configDto.database());
-
+		config.setHostName(redisHost);
+		config.setPort(Integer.parseInt(redisPort));
+		config.setPassword(redisPassword);
 		return new LettuceConnectionFactory(config);
 	}
 
