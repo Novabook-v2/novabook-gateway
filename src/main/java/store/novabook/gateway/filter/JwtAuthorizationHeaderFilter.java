@@ -31,14 +31,26 @@ import store.novabook.gateway.util.dto.JWTConfigDto;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<JwtAuthorizationHeaderFilter.Config> {
+public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<JwtAuthorizationHeaderFilter.Config>
+	implements
+	InitializingBean {
 
 	private final AuthenticationService authenticationService;
 	private final JWTUtil jwtUtil;
-	private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+	private final Environment env;
+	private JWTConfigDto jwtConfig;
+	private Key key;
+
+	@Override
+	public void afterPropertiesSet() {
+		String secret = env.getProperty("JWT-SECRET");
+		byte[] keyBytes = Decoders.BASE64.decode(secret);
+		this.key = Keys.hmacShaKeyFor(keyBytes);
+	}
 
 	public static class Config {
 		public void init() {
+			//nothing
 		}
 	}
 
@@ -54,8 +66,7 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
 				String accessToken = "";
 				if (request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
 					accessToken = Objects.requireNonNull(request.getHeaders().get(HttpHeaders.AUTHORIZATION))
-						.getFirst()
-						.replace("Bearer ", "");
+						.getFirst().replace("Bearer ", "");
 				} else {
 					log.info("액세스 토큰이 없습니다");
 					throw new ExpiredJwtException(null, null, "No Authorization");
