@@ -1,6 +1,5 @@
 package store.novabook.gateway.filter;
 
-import static io.jsonwebtoken.security.Keys.*;
 
 import java.security.Key;
 import java.util.Objects;
@@ -13,12 +12,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import store.novabook.gateway.config.JWTUtil;
 import store.novabook.gateway.entity.AccessTokenInfo;
 import store.novabook.gateway.service.AuthenticationService;
-import store.novabook.gateway.util.dto.JWTConfigDto;
 
 @Component
 @Slf4j
@@ -38,7 +34,6 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
 	private final AuthenticationService authenticationService;
 	private final JWTUtil jwtUtil;
 	private final Environment env;
-	private JWTConfigDto jwtConfig;
 	private Key key;
 
 	@Override

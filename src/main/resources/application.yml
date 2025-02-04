@@ -41,8 +41,3 @@ management:
     web:
       exposure:
         include: health,info,pause,resume
----
-spring:
-  config:
-    activate:
-      on-profile: dev

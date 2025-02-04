@@ -16,18 +16,26 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class JWTUtil  {
+public class JWTUtil implements InitializingBean {
+	private final Environment env;
+	private SecretKey key;
+
+	@Override
+	public void afterPropertiesSet() {
+		String secret = env.getProperty("JWT-SECRET");
+		byte[] keyBytes = Decoders.BASE64.decode(secret);
+		this.key = Keys.hmacShaKeyFor(keyBytes);
+	}
 
 	public String getUUID(String token) {
 		Claims claims = Jwts
 			.parserBuilder()
-			.setSigningKey("securityKey")
+			.setSigningKey(key)
 			.build()
 			.parseClaimsJws(token)
 			.getBody();
 
 		return claims.get("uuid", String.class);
 	}
-
 
 }
