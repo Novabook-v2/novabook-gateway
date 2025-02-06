@@ -1,7 +1,5 @@
 package store.novabook.gateway.config;
 
-import java.nio.charset.StandardCharsets;
-
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.InitializingBean;

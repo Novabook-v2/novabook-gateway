@@ -52,6 +52,7 @@ public class JwtAuthorizationHeaderFilter extends AbstractGatewayFilterFactory<J
 	@Override
 	public GatewayFilter apply(Config config) {
 		return (exchange, chain) -> {
+
 			ServerHttpRequest request = exchange.getRequest();
 			if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
 				log.info("인증 정보가 없습니다");
