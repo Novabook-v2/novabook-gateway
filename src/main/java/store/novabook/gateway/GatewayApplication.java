@@ -11,6 +11,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class GatewayApplication {
 
 	public static void main(String[] args) {
+		System.out.println("2월 11일 15:02 반영");
 		SpringApplication.run(GatewayApplication.class, args);
 	}
 

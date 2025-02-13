@@ -1,0 +1,17 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+cor:
+  url: http://novabook-front-service:8080
+
+# 유레카에 gateway 등록
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://novabook-eureka-service:8761/eureka
